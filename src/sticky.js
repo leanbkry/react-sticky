@@ -5,6 +5,7 @@ export default class Sticky extends React.Component {
 
   static propTypes = {
     isActive: React.PropTypes.bool,
+    fixOnBottom: React.PropTypes.bool,
     className: React.PropTypes.string,
     style: React.PropTypes.object,
     stickyClassName: React.PropTypes.string,
@@ -16,6 +17,7 @@ export default class Sticky extends React.Component {
 
   static defaultProps = {
     isActive: true,
+    fixOnBottom: false,
     className: '',
     style: {},
     stickyClassName: 'sticky',
@@ -83,7 +85,11 @@ export default class Sticky extends React.Component {
     const topBreakpoint = this.state.containerOffset - this.props.topOffset;
     const bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
 
-    return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
+    if (this.props.fixOnBottom) {
+      return fromTop >= (topBreakpoint + (window ? window.innerHeight : 0) - this.getHeight()) && fromBottom >= bottomBreakpoint;
+    } else {
+      return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
+    }
   }
 
   updateContext = ({ inherited, node }) => {
